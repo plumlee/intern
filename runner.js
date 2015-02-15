@@ -1,4 +1,17 @@
 /*jshint node:true, es3:false */
+
+// will need this when we merge user config and default intern config
+var amdMappings = {
+	intern: {
+		dojo: 'intern/node_modules/dojo',
+		chai: 'intern/node_modules/chai/chai',
+		diff: 'intern/node_modules/diff/diff'
+	},
+	'*': {
+		'intern/dojo': 'intern/node_modules/dojo'
+	}
+};
+
 if (typeof process !== 'undefined' && typeof define === 'undefined') {
 	(function () {
 		// this.require must be exposed explicitly in order to allow the loader to be
@@ -10,16 +23,7 @@ if (typeof process !== 'undefined' && typeof define === 'undefined') {
 			packages: [
 				{ name: 'intern', location: __dirname }
 			],
-			map: {
-				intern: {
-					dojo: 'intern/node_modules/dojo',
-					chai: 'intern/node_modules/chai/chai',
-					diff: 'intern/node_modules/diff/diff'
-				},
-				'*': {
-					'intern/dojo': 'intern/node_modules/dojo'
-				}
-			}
+			map: amdMappings
 		}, [ 'intern/runner' ]);
 	})();
 }
@@ -83,7 +87,8 @@ else {
 				tunnelOptions: {
 					tunnelId: '' + Date.now()
 				},
-				loader: {},
+                // need to preserve the base intern module mappings
+				loader: { map: amdMappings },
 				maxConcurrency: 3,
 				proxyPort: 9000,
 				proxyUrl: 'http://localhost:9000'
